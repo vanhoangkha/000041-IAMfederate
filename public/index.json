@@ -1,0 +1,127 @@
+[
+{
+	"uri": "/",
+	"title": "AWS IAM Federation from Microsoft Azure Active Directory",
+	"tags": [],
+	"description": "",
+	"content": "AWS IAM Federation from Microsoft Azure Active Directory Overview In this lab, we will learn about the IAM Federation feature on AWS. An abstract concept for those who are just starting to learn about AWS.\nResults of this lab:\n  Integrating Microsoft Azure AD with IAM via SAML\n  Users created on Microsoft Azure AD have the ability to connect to AWS to use the permissions set up on both AWS and Azure sides.\n  Understanding IAM Federation\n  Concept of SAML  SAML stands for Security Assertion Markup language. Generally, users need to enter username and password to log in to any application. SAML is a technique to achieve Single Sign-On – Single Sign On (SSO). Security Assertion Markup Language (SAML) is an Xml-based framework that allows identity providers to provide authorization credentials to service providers. With SAML, you need to enter a security attribute to log in to the application SAML is the link between user identity authentication and service authorization. SAML provides a service called Single Sign On which means the user has to sign in once and can use the same credentials to sign in to another service provider.  Content  Introduction Preparation steps Initiate Azure AD Create Azure AD Users Create an Enterprise Application (EA) connecting to AWS Set Up SSO with AWS Create Identity Provider on AWS Sync Roles on AWS to Azure AD assume Federating Azure AD Users Accessing AWS Federating Azure AD Users to AWS Check Service Usage  "
+},
+{
+	"uri": "/2-prerequiste/2.1-createanazureaccount/",
+	"title": "Create Azure Account",
+	"tags": [],
+	"description": "",
+	"content": "\rTo use Azure services, you must first create an Azure account. You will need a valid credit card(This card is only used for identity verification) to create a free Azure account\n\rSteps to create an Azure account   Go to Azure\n  Scroll down to learn more about the free service available.   Select Start free\n  Sign in with Microsoft account (if you don\u0026rsquo;t have one, you can create a free Microsoft account) or Github account. In the About you page, you select your exact country or region.   Enter First and last name Enter your email address Enter your phone number Then, select Next  On the screen Identity verification by phone   Select country code Enter your phone number You have the option to text or call back to get the verification code  Enter the code in Verification code and select Verify code   If the verification code is correct, you will be asked to enter the details of a valid credit card  Enter card information and select Next Check again and select Sign up  "
+},
+{
+	"uri": "/1-introduce/",
+	"title": "Introduction",
+	"tags": [],
+	"description": "",
+	"content": "Overview   By default when you create an AWS account, you need to create user accounts (called IAM Users) to use provisioned AWS services, for example Amazon S3 or Amazon EC2… These permissions are also very specific and minimal (least privilige) according to actions, Region and resources…\n  For some organizations where users are managed at Microsoft AD but still want to take advantage of this list of users to log in to use AWS without having to create additional independent users by organization and account AWS. AWS supports this feature called IAM Federation.\n  Content Create an AWS account, please refer to the lab CREATE A FIRST AWS ACCOUNT\n\r Create an Azure account Initialize Azure Active Directory Create Azure AD Users Create Enterprise Application Set up SSO Create Identity providers Create IAM Roles Synchronize IAM Roles Provisioning to AWS Federating Azure AD Users accessing AWS Federating Azure AD Users to AWS Clean up resources  "
+},
+{
+	"uri": "/2-prerequiste/2.2-createazuread/",
+	"title": "Initialize Azure Active Directory",
+	"tags": [],
+	"description": "",
+	"content": "Overview Azure Active Directory (Azure AD) is a cloud-based identity and access management service. This service helps you access external resources, such as Microsoft 365, Azure portals, and thousands of other SaaS applications. Azure AD also helps them access internal resources. These are resources like apps on your corporate and intranet, along with any cloud apps developed by your organization\nAzure AD User   IT Admin: use Azure AD to control access to your apps and application resources, based on your business requirements. For example, you can use Azure AD to require multi-factor authentication when accessing your organization\u0026rsquo;s critical resources. You can also use Azure AD to automatically provision users between your existing Windows Server AD and your cloud applications, including Microsoft 365. Azure AD gives you powerful tools to automatically help protect your users\u0026rsquo; identities and credentials, and meet your access administration requirements.\n  App developer: use Azure AD as a standards-based approach to add single sign-on (SSO) to your app, allowing it to work with credentials user availability. Azure AD also provides APIs that can help you build personalized app experiences using existing organizational data.\n  Microsoft 365, Office 365, Azure, or Dynamics CRM Online subscribers: Each Microsoft 365, Office 365, Azure, and Dynamics CRM Online tenant is automatically an Azure AD tenant. You can start right away to manage access to your integrated cloud applications.\n  Azure AD license  Azure Active Directory Free: Provides user and group management, on-premises directory synchronization, basic reporting, self-service password change for cloud users, and logins once on Azure, Microsoft 365, and many popular SaaS applications. Azure Active Directory Premium P1: P1 allows your hybrid users to access both on-premises and cloud resources. Advanced administrative support, such as dynamic groups, self-service group management, Microsoft Identity Manager, and cloud rewritability, enables self-service password resets for your on-premises users. Azure Active Directory Premium P2: provides Azure Active Directory Identity Protection to help provide Risk-Based Conditional Access to your applications and critical corporate and Administration data. privileged identity management to help discover, restrict, and monitor administrators and their access to resources, and provide just-in-time access when needed. \u0026ldquo;Pay as you go\u0026rdquo; feature licenses: You can also get additional feature licenses, such as Azure Active Directory Business-to-Customer (B2C). B2C can help you deliver identity and access management solutions for your customer-facing applications.  Azure AD initialization steps  Log in to Azure Portal  Select Create a resource  In the Create a resource page, start searching for Azure Active Directory  The interface appears, select Create  In the Create a tenant page   In the Tenant type section, select Azure Active Directory  Select Next:Configuration  In Configure your new directory   Organization name, Enter the name Azure AD (Note that the name must be unique). Example: Firstcloudjourney Initial domain name, enter firstcloudjourney  Select Next: Review + create  Check again and select Create  You may be asked to enter a captcha for authentication   Enter captcha Select Submit   Then wait a few minutes you will have Azure AD.\n  You select your tenant\u0026rsquo;s name to view information.\n  If you see the same result, you have completed this step. We go to the next step, which is to create some users on Azure AD to use that user to log in to AWS later.  "
+},
+{
+	"uri": "/2-prerequiste/",
+	"title": "Preparatory steps",
+	"tags": [],
+	"description": "",
+	"content": "Prepare  AWS account with permission to use IAM Azure Account  This lab is done in the Free Tier in both AWS and Azure. You can find more information at the following links:\n AWS Free Tier Azure Free Tier  Content  2.1 Create Azure Account 2.2 Initialize Azure Active Directory 2.3 Create Azure AD Users  "
+},
+{
+	"uri": "/3-enterpriseapplication/",
+	"title": "Create an Enterprise Application to connect to AWS",
+	"tags": [],
+	"description": "",
+	"content": " Go to Azure AD tenant management page (Firstcloudjourney)  Select Enteprise applications in the left menu.  Currently we do not have any connection app.  Create Enterprise Application, select New application  In Browse Azure AD Gallery   Cloud platforms select Amazon Web Service  Select AWS Single-Account Access  Select Create  Wait a few minutes, after creating the result as shown, creating AWS Single-Account Access is successful  "
+},
+{
+	"uri": "/2-prerequiste/2.3-createazureadusers/",
+	"title": "Create Azure AD Users",
+	"tags": [],
+	"description": "",
+	"content": "\rAzure AD has a group creation feature to manage the set of users and assign permissions to the group. The use is also simple, but to use it, it is necessary to upgrade the Azure account, so I will only guide the integration of authorization via User in this lab.\n\rIn this lab, create 02 users aws-1 and aws-2.  Select Users  Select New user  In Identity   Enter User name. Example: aws-1 Enter Name. Example: AWScloud-1  Password section   Select Let me create the password Initial password, enter a password with a minimum length of 8 characters and the following requirements:  Lowercase characters Uppercase characters Numbers (0-9) Symbols (@ # $ % ^ \u0026amp; * - _ ! + = { } | \\ : \u0026rsquo; , . ? / ` ~ \u0026quot; ( ) ; \u0026lt; \u0026gt; ) Example: Admin@aws123    Leave the rest blank, then select Create  After creating the user, we have the following list of users:  Select user name and view details  You can create more users to give labs more scenarios.\n\rCreate a new user named aws-2  "
+},
+{
+	"uri": "/4-thi%E1%BA%BFt-l%E1%BA%ADp-sso-v%E1%BB%9Bi-aws/",
+	"title": "Setting up SSO with AWS",
+	"tags": [],
+	"description": "",
+	"content": " In the AWS Single-Account Access page, on the left menu, select Single sign on  Select SAML  In the Set up Single Sign-On with SAML section   Section Basic SAML Configuration, select Edit  Section Basic SAML Configuration   Identifier (Entity ID), add #2 to the link to make sure this SAML login link is unique. Because I already have a SAML in my account, I have to edit the link here.  Select Save to save the information  You download Federation Metadata XML, you will use this XML file to upload to AWS to connect.  "
+},
+{
+	"uri": "/5-identity-providers/",
+	"title": "Create Identity providers on AWS",
+	"tags": [],
+	"description": "",
+	"content": " Sign in to AWS Console  Find IAM and select the Identity and Access Management (IAM) interface Select Identity providers  Create Identity Provider, select Add provider  In Add an Identity provider, section Configure provider   Provider type, select SAML Provider name, enter AzureAD Metadata document, select Choose file and upload metadata file AWS Single-Account Access.xml  Select Add provider  Select View provider to view details.  We have successfully created AzureAD Identity Provider on AWS.  "
+},
+{
+	"uri": "/6-roles/",
+	"title": "Create Roles on AWS for Azure AD assume",
+	"tags": [],
+	"description": "",
+	"content": "\rIn this step we will create 02 roles with access rights as S3 and EC2 to close to the 02 users we created in Azure, aws-1 and aws-2.\n\rCreate AmazonS3FullAccess  Retrieve the IAM Role, select Role in the left menu of the AWS IAM service Select Create role  In Trusted entity type, select SAML federation  In SAML 2.0 federation   SAML 2.0–based provider, Select the AzureAD Identity Provider information we created earlier Select Allow programmatic and AWS Management Console access Then select Next  In Add permissions, find AmazonS3FullAccess  Select AmazonS3FullAccess, continue to select Next  In Name, review, and create    In the Role details section, in the Role name section, enter S3RoleFull\n  In the Description section, enter AmazonS3FullAccess\n  Double check and select Create role  Select View role to view the details of the newly created role  Role creation results  Create AmazonEC2FullAccess  Retrieve the IAM Role, select Role in the left menu of the AWS IAM service Select Create role  In Trusted entity type, select SAML federation  In SAML 2.0 federation   SAML 2.0–based provider, Select the AzureAD Identity Provider information we created earlier Select Allow programmatic and AWS Management Console access Then select Next  In Add permissions, find AmazonEC2FullAccess  Select AmazonEC2FullAccess, continue to select Next  In Name, review, and create    In the Role details section, in the Role name section, enter EC2RoleFull\n  In the Description section, enter AmazonEC2FullAccess\n  Double check and select Create role  Select View role to view the details of the newly created role  Role creation results  "
+},
+{
+	"uri": "/7-awsiamrolesazure/",
+	"title": "Sync AWS IAM Roles on AWS via Azure",
+	"tags": [],
+	"description": "",
+	"content": "\rSo we have 02 roles on AWS federate to the Azure AD we created (Firstcloudjourney). In this step, we have granted permission to 02 roles but have not synced these Roles through Azure AD.\n\rRoles created:\n S3RoleFull (AmazonS3FullAccess) EC2RoleFull (AmazonEC2FullAccess)   Create User Federating Access, open Identity and Access Management (IAM) interface Select Users on the left menu  Select Add users  In Add user   User name, enter federating   In Select AWS access type, select Access key - Programmatic access\n  Select Next:Permissions\n  Select Create policy  In Service select IAM   In Specify the actions allowed in IAM, find and select ListRoles\n  Select Next:Tags\n  Select Next: Review  In Review policy   Name, enter ListRoles Description, enter ListRoles  Select Create Policy  Assign ListRoles to User federating   Go back to the User tab to continue selecting the Policy for the federating user we were creating in the previous step. Select ListRoles  Select Next: Tags  Select Next: Review  Check again and Select Create user  Create a successful user  You will get the Access key ID and Secret access key in this step. We will use this Keys to declare in Azure AD. You can copy this key to use for the next step.\n\r"
+},
+{
+	"uri": "/8-provisingazure/",
+	"title": "Declaring Providing on Azure",
+	"tags": [],
+	"description": "",
+	"content": " Go back to Azure AD Portal and choose Provisioning  Select Get started  In Provisioning   In the Provisioning Mode section, select Automatic   Import clientsect and secret token from the federating user we created in the previous step.\n  Select Test Connection\n  Confirmation success  Select Save to save  "
+},
+{
+	"uri": "/9-provisioningtoaws/",
+	"title": "Provisioning to AWS",
+	"tags": [],
+	"description": "",
+	"content": " Return to Provisioning tab in Azure AD You select Refresh to see the updated status of 02 roles (S3RoleFull \u0026amp; EC2RoleFull)  Updated status for 02 roles (S3RoleFull \u0026amp; EC2RoleFull)  By default, Azure will automatically update AWS-created roles every 40 minutes.\n\r"
+},
+{
+	"uri": "/10-federating/",
+	"title": "Federating Azure AD Users Accessing AWS",
+	"tags": [],
+	"description": "",
+	"content": " Assign Azure AD Users to AWS IAM Role, in Azure AD Portal select Users and groups  Select Add user/group  Note: For AWS Roles to show up in the next step, you may have to wait 5-10 minutes. And to use the feature of assigning AWS IAM Roles to Azure by Group, you need to upgrade your Azure plan.\n\rIn the Add Assignment page   Select Users, a list of Users will appear on the right  Select the user name (eg AWScloud-1) and select Select  In the Select a role section, select None Select to select the User Role AWScloud-1 Select EC2RoleFull Select Select  Select Assign  You iterate and assign User AWScloud-2 to S3RoleFull.  So you have created a user in Azure AD and connected to AWS through the Identity Provider.\n"
+},
+{
+	"uri": "/11-federatingazureadusers%C4%91%E1%BA%BFnaws/",
+	"title": "Federating Azure AD Users to AWS",
+	"tags": [],
+	"description": "",
+	"content": " Retrieved from My Apps page  Enter user credentials (eg aws-2@firstcloudjourney.onmicrosoft.com) Select Next   You need to change your password at first login.\n  Then select Login\n  You can see the AWS Single-Account Access App we created. Select to access.   You can now access the AWS Console from Azure AD  Check service usage  As you know, we assign user aws-2@firstcloudjourney.onmicrosoft.com with S3Full permission. Tried EC2 and we don\u0026rsquo;t have access You are not authorized to perform this operation  We can access Amazon S3 through permission setting.  Congratulations on your successful implementation of Federating from Azure AD.\n"
+},
+{
+	"uri": "/12-clearup/",
+	"title": "Clean up resources",
+	"tags": [],
+	"description": "",
+	"content": "Delete Azure AD users  Sign in to Porttal Azure homepage Select Azure Active Directory Select Users On the list of users, select the user to delete from the lab Then select delete user Select OK  Delete Enterprise applications  Sign in to Porttal Azure homepage Select Azure Active Directory Select Enterprise applications Select AWS Single-Account Access Select Properties Select Delete Select Yes  Delete tenant  Sign in to Porttal Azure homepage Select Azure Active Directory On the Properties page, in the Access management for Azure resources section, select Yes Select Manage tenants Select Firstcloudjourney Select Delete After checking, continue to select Delete  Delete User Identity and Access Management (IAM)  Log in to Identity and Access Management (IAM) Select Users Select the user name to delete the lab Select delete Fill in federating and select Delete  Remove Identity and Access Management (IAM) role  Sign in to Identity and Access Management (IAM) Select Roles Select EC2RoleFull and S3RoleFull Then select Delete Fill in delete  Remove Policies Identity and Access Management (IAM)  Sign in to Identity and Access Management (IAM) Select Policies Select ListRoles Select Actions and select Delete Fill in the deletion confirmation ListRoles and select Delete  Delete Identity providers Identity and Access Management (IAM)  Sign in to Identity and Access Management (IAM) Select Identity providers Select AzureAD Select Delete Confirm delete  "
+},
+{
+	"uri": "/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]

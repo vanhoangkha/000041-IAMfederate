@@ -1,0 +1,127 @@
+[
+{
+	"uri": "/vi/",
+	"title": "AWS IAM Federation từ Microsoft Azure Active Directory",
+	"tags": [],
+	"description": "",
+	"content": "AWS IAM Federation từ Microsoft Azure Active Directory Tổng quan Ở bài lab này chúng ta sẽ cùng nhau tìm hiểu tính năng IAM Federation trên AWS. Một khái niệm trừu tượng với những bạn mới bắt đầu tìm hiểu về AWS.\nKết quả của bài lab này:\n  Tích hợp Microsoft Azure AD với IAM thông qua SAML\n  User tạo trên Microsoft Azure AD có khả năng kết nối vào AWS để sử dụng các quyền hạn theo thiết lập ở cả hai phía AWS và Azure.\n  Hiểu về IAM Federation\n  Khái niệm về SAML  SAML là viết tắt của Security Assertion Markup language(ngôn ngữ Đánh dấu xác nhận bảo mật). Nói chung, người dùng cần nhập tên người dùng và mật khẩu để đăng nhập vào bất kỳ ứng dụng nào. SAML là một kỹ thuật đạt được Single Sign-On – Đăng nhập một lần (SSO) . Security Assertion Markup Language (SAML) là một khuôn khổ dựa trên Xml cho phép nhà cung cấp danh tính cung cấp thông tin xác thực ủy quyền cho nhà cung cấp dịch vụ. Với SAML, bạn cần nhập một thuộc tính bảo mật để đăng nhập vào ứng dụng SAML là liên kết giữa xác thực danh tính của người dùng và ủy quyền sử dụng dịch vụ. SAML cung cấp một dịch vụ được gọi là Đăng nhập một lần có nghĩa là người dùng phải đăng nhập một lần và có thể sử dụng cùng thông tin xác thực để đăng nhập vào nhà cung cấp dịch vụ khác.  Nội dung  Giới thiệu Các bước chuẩn bị Khởi tạo Azure AD Tạo Azure AD Users Tạo Enterprise Application (EA) kết nối AWS Thiết lập SSO với AWS Tạo Identity Provider trên AWS Đồng bộ Roles trên AWS để Azure AD assume Federating Azure AD Users truy xuất AWS Federating Azure AD Users đến AWS Kiểm tra dịch vụ sử dụng  "
+},
+{
+	"uri": "/vi/1-introduce/",
+	"title": "Giới thiệu",
+	"tags": [],
+	"description": "",
+	"content": "Tổng quan   Mặc định khi bạn tạo tài khoản AWS, bạn cần tạo các tài khoản người dùng (gọi là IAM Users) để sử dụng các dịch vụ AWS theo cấp phát, ví dụ Amazon S3 hay Amazon EC2… Các quyền này còn được phân rất cụ thể và tối thiểu (least privilige) theo các action, Region và resource…\n  Với một số tổ chức mà users được quản lý ở Microsoft AD nhưng vẫn muốn tận dụng danh sách các users này để đăng nhập sử dụng AWS mà không phải tạo thêm các users độc lập theo tổ chức và trên tài khoản AWS. AWS hỗ trợ tính năng này gọi là IAM Federation.\n  Nội dung Tạo tài khoản AWS, các bạn tham khảo bài lab TẠO TÀI KHOẢN AWS ĐẦU TIÊN\n\r Tạo tài khoản Azure Khởi tạo Azure Active Directory Tạo Azure AD Users Tạo Enterprise Application Thiết lập SSO Tạo Identity providers Tạo IAM Roles Đồng bộ IAM Roles Provisioning to AWS Federating Azure AD Users truy xuất AWS Federating Azure AD Users đến AWS Dọn dẹp tài nguyên  "
+},
+{
+	"uri": "/vi/2-prerequiste/2.1-createanazureaccount/",
+	"title": "Tạo tài khoản Azure",
+	"tags": [],
+	"description": "",
+	"content": "\rĐể sử dụng dịch vụ Azure, trước hết bạn phải tạo tài khoản Azure. Bạn sẽ cần một thẻ tín dụng hợp lệ(Thẻ này chỉ được sử dụng để xác thực danh tính) để tạo tài khoản Azure miễn phí\n\rCác bước tạo tài khoản Azure   Vào trang chủ của Azure\n  Cuộn trang xuống để tìm hiểu thêm về dịch vụ miễn phí hiện có.   Chọn Start free\n  Đăng nhập bằng tài khoản Microsoft(nếu chưa có thì có thể tạo tài khoản Microsoft miễn phí) hoặc tài khoản Github. Trong trang About you, bạn chọn quốc gia hoặc khu vực chính xác của bạn.   Nhập Họ và tên Nhập địa chỉ email Nhập số điện thoại Sau đó, chọn Next  Trên màn hình Identity verification by phone   Chọn mã quốc gia Nhập số điện thoại Bạn có tùy chọn nhắn tin hoặc gọi lại để lấy mã xác minh  Nhập mã vào Verification code và chọn Verify code   Nếu mã xác minh chính xác, bạn sẽ được yêu cầu nhập chi tiết của thẻ tín dụng hợp lệ  Nhập thông tin thẻ và chọn Next Kiểm tra lại và chọn Sign up  "
+},
+{
+	"uri": "/vi/2-prerequiste/",
+	"title": "Các bước chuẩn bị",
+	"tags": [],
+	"description": "",
+	"content": "Chuẩn bị  Tài khoản AWS có quyền sử dụng IAM Tài khoản Azure  Bài lab này thực hiện trong Free Tier ở cả AWS và Azure. Các bạn có thể tham khảo thêm ở links sau:\n AWS Free Tier Azure Free Tier  Nội dung  2.1 Tạo tài khoản Azure 2.2 Khởi tạo Azure Active Directory 2.3 Tạo Azure AD Users  "
+},
+{
+	"uri": "/vi/2-prerequiste/2.2-createazuread/",
+	"title": "Khởi tạo Azure Active Directory ",
+	"tags": [],
+	"description": "",
+	"content": "Tổng quan Azure Active Directory (Azure AD) là một dịch vụ quản lý truy cập và nhận dạng dựa trên đám mây. Dịch vụ này giúp bạn truy cập các tài nguyên bên ngoài, chẳng hạn như Microsoft 365, cổng Azure và hàng nghìn ứng dụng SaaS khác. Azure AD cũng giúp họ truy cập tài nguyên bên trong. Đây là những tài nguyên như ứng dụng trên mạng công ty và mạng nội bộ của bạn, cùng với bất kỳ ứng dụng đám mây nào do tổ chức của bạn phát triển\nNgười dùng Azure AD  Quản trị viên CNTT: sử dụng Azure AD để kiểm soát quyền truy cập vào ứng dụng và tài nguyên ứng dụng của bạn, dựa trên yêu cầu kinh doanh của bạn. Ví dụ: bạn có thể sử dụng Azure AD để yêu cầu xác thực đa yếu tố khi truy cập các tài nguyên quan trọng của tổ chức. Bạn cũng có thể sử dụng Azure AD để tự động cấp phép người dùng giữa Windows Server AD hiện có và các ứng dụng đám mây của bạn, bao gồm cả Microsoft 365. Azure AD cung cấp cho bạn các công cụ mạnh mẽ để tự động giúp bảo vệ danh tính và thông tin xác thực của người dùng cũng như đáp ứng các yêu cầu quản trị quyền truy cập của bạn. Nhà phát triển ứng dụng: sử dụng Azure AD làm phương pháp tiếp cận dựa trên tiêu chuẩn để thêm đăng nhập một lần (SSO) vào ứng dụng của bạn, cho phép ứng dụng hoạt động với thông tin đăng nhập sẵn có của người dùng. Azure AD cũng cung cấp các API có thể giúp bạn xây dựng trải nghiệm ứng dụng được cá nhân hóa bằng cách sử dụng dữ liệu tổ chức hiện có. Người đăng ký Microsoft 365, Office 365, Azure hoặc Dynamics CRM Online: Mỗi đối tượng thuê Microsoft 365, Office 365, Azure và Dynamics CRM Online tự động là đối tượng thuê Azure AD. Bạn có thể bắt đầu ngay lập tức để quản lý quyền truy cập vào các ứng dụng đám mây tích hợp của mình.  Azure AD license  Azure Active Directory miễn phí: Cung cấp tính năng quản lý người dùng và nhóm, đồng bộ hóa thư mục tại chỗ, báo cáo cơ bản, thay đổi mật khẩu tự phục vụ cho người dùng đám mây và đăng nhập một lần trên Azure, Microsoft 365 và nhiều ứng dụng SaaS phổ biến. Azure Active Directory Premium P1: P1 cho phép người dùng kết hợp của bạn truy cập cả tài nguyên tại chỗ và đám mây. Hỗ trợ quản trị nâng cao, chẳng hạn như nhóm động, quản lý nhóm tự phục vụ, Microsoft Identity Manager và khả năng ghi lại trên đám mây, cho phép đặt lại mật khẩu tự phục vụ cho người dùng tại chỗ của bạn. Azure Active Directory Premium P2: cung cấp Bảo vệ danh tính Azure Active Directory để giúp cung cấp Quyền truy cập có điều kiện dựa trên rủi ro vào các ứng dụng của bạn và dữ liệu quan trọng của công ty và Quản lý danh tính đặc quyền để giúp khám phá, hạn chế và giám sát quản trị viên cũng như quyền truy cập của họ vào tài nguyên và cung cấp quyền truy cập đúng lúc khi cần thiết. \u0026ldquo;Pay as you go\u0026rdquo; feature licenses: Bạn cũng có thể nhận các giấy phép tính năng bổ sung, chẳng hạn như Azure Active Directory Business-to-Customer (B2C). B2C có thể giúp bạn cung cấp các giải pháp quản lý danh tính và quyền truy cập cho các ứng dụng hướng tới khách hàng của bạn.  Các bước khởi tạo Azure AD  Đăng nhập vào Azure Portal  Chọn Create a resource  Trong trang Create a resource, bắt đầu tìm kiếm Azure Active Directory  Giao diện xuất hiện, chọn Create  Trong trang Create a tenant   Phần Tenant type, chọn Azure Active Directory  Chọn Next:Configuration  Trong Configure your new directory   Organization name, Nhập tên Azure AD (Lưu ý tên phải duy nhất). Ví dụ: Firstcloudjourney Initial domain name, nhập firstcloudjourney  Chọn Next: Review + create  Kiểm tra lại và chọn Create  Bạn có thể bị hỏi nhập captcha để xác thực   Nhập captcha Chọn Submit   Sau đó chờ ít phút bạn sẽ có Azure AD.\n  Các bạn chọn vào tên tenant của bạn để xem thông tin.\n  Nếu bạn thấy kết quả tương tự có nghĩa là bạn đã hoàn thành bước này. Chúng ta qua bước tiếp theo là tạo một số users trên Azure AD để sau này dùng user đó đăng nhập vào AWS.  "
+},
+{
+	"uri": "/vi/2-prerequiste/2.3-createazureadusers/",
+	"title": "Tạo Azure AD Users",
+	"tags": [],
+	"description": "",
+	"content": "\rAzure AD có tính năng tạo group để quản lý tập users và gán quyền cho group. Việc sử dụng cũng đơn giản nhưng để sử dụng cần upgrade tài khoản Azure nên mình sẽ chỉ hướng dẫn tích hợp phân quyền qua User trong bài lab này.\n\rTrong bài lab này, tạo 02 users là aws-1 và aws-2.  Chọn Users  Chọn New user  Trong Identity   Nhập User name. Ví dụ: aws-1 Nhập Name. Ví dụ: AWScloud-1  Phần Password   Chọn Let me create the password Initial password, nhập password có độ dài tối thiểu 8 ký tự và các yêu cầu sau:  Lowercase characters Uppercase characters Numbers (0-9) Symbols (@ # $ % ^ \u0026amp; * - _ ! + = { } | \\ : ‘ , . ? / ` ~ \u0026quot; ( ) ; \u0026lt; \u0026gt; ) Ví dụ: Admin@aws123    Các phần còn lại bỏ trống, sau đó chọn Create  Sau khi tạo user, ta có danh sách user sau:  Chọn tên user và xem chi tiết  Bạn có thể tạo thêm nhiều users để bài labs được nhiều tình huống hơn.\n\rThực hiện tạo thêm một user có tên aws-2  "
+},
+{
+	"uri": "/vi/3-enterpriseapplication/",
+	"title": "Tạo Enterprise Application kết nối AWS",
+	"tags": [],
+	"description": "",
+	"content": " Vào trang quản lý Azure AD tenant (Firstcloudjourney)  Chọn Enteprise applications ở menu bên trái.  Hiện tại chúng ta chưa có app kết nối nào.  Tạo Enterprise Application, chọn New application  Trong Browse Azure AD Gallery   Cloud platforms chọn Amazon Web Service  Chọn AWS Single-Account Access  Chọn Create  Đợi ít phút, sau khi tạo kết quả như hình là tạo AWS Single-Account Access thành công  "
+},
+{
+	"uri": "/vi/4-thi%E1%BA%BFt-l%E1%BA%ADp-sso-v%E1%BB%9Bi-aws/",
+	"title": "Thiết lập SSO với AWS",
+	"tags": [],
+	"description": "",
+	"content": " Trong trang AWS Single-Account Access, menu bên trái bạn chọn Single sign on  Chọn SAML  Trong phần Set up Single Sign-On with SAML   Mục Basic SAML Configuration, chọn Edit  Mục Basic SAML Configuration   Identifier (Entity ID), thêm #2 vào đường link để đảm bảo link đăng nhập SAML này là duy nhất. Do tài khoản mình đã có một SAML trước rồi nên phải sửa link chỗ này.  Chọn Save để lưu thông tin  Các bạn download Federation Metadata XML, các bạn sẽ dùng file XML này để upload lên AWS để kết nối.  "
+},
+{
+	"uri": "/vi/5-identity-providers/",
+	"title": "Tạo Identity providers trên AWS",
+	"tags": [],
+	"description": "",
+	"content": " Đăng nhập vào AWS Console  Tìm IAM và chọn đến giao diện Identity and Access Management (IAM) Chọn Identity providers  Tạo Identity Provider, chọn Add provider  Trong Add an Identity provider, phần Configure provider   Provider type, chọn SAML Provider name, nhập AzureAD Metadata document, chọn Choose file và upload metadata file AWS Single-Account Access.xml  Chọn Add provider  Chọn View provider để xem chi tiết.  Chúng ta đã thành công tạo AzureAD Identity Provider trên AWS.  "
+},
+{
+	"uri": "/vi/6-roles/",
+	"title": "Tạo Roles trên AWS để Azure AD assume",
+	"tags": [],
+	"description": "",
+	"content": "\rỞ bước này chúng ta sẽ tạo 02 roles với quyền truy xuất là S3 và EC2 để gấn cho 02 users chúng ta đã tạo ở Azure là aws-1 và aws-2.\n\rTạo AmazonS3FullAccess  Truy xuất IAM Role, chọn Role ở menu bên trái của dịch vụ AWS IAM Chọn Create role  Trong Trusted entity type, chọn SAML federation  Trong SAML 2.0 federation   SAML 2.0–based provider, Chọn thông tin AzureAD Identity Provider chúng ta đã tạo từ trước Chọn Allow programmatic and AWS Management Console access Sau đó chọn Next  Trong Add permissions, tìm AmazonS3FullAccess  Chọn AmazonS3FullAccess, tiếp tục chọn Next  Trong Name, review, and create    Phần Role details, mục Role name, nhập S3RoleFull\n  Phần Description, nhập AmazonS3FullAccess\n  Kiểm tra lại và chọn Create role  Chọn View role để xem chi tiết role vừa tạo  Kết quả tạo role  Tạo AmazonEC2FullAccess  Truy xuất IAM Role, chọn Role ở menu bên trái của dịch vụ AWS IAM Chọn Create role  Trong Trusted entity type, chọn SAML federation  Trong SAML 2.0 federation   SAML 2.0–based provider, Chọn thông tin AzureAD Identity Provider chúng ta đã tạo từ trước Chọn Allow programmatic and AWS Management Console access Sau đó chọn Next  Trong Add permissions, tìm AmazonEC2FullAccess  Chọn AmazonEC2FullAccess, tiếp tục chọn Next  Trong Name, review, and create    Phần Role details, mục Role name, nhập EC2RoleFull\n  Phần Description, nhập AmazonEC2FullAccess\n  Kiểm tra lại và chọn Create role  Chọn View role để xem chi tiết role vừa tạo  Kết quả tạo role  "
+},
+{
+	"uri": "/vi/7-awsiamrolesazure/",
+	"title": "Đồng bộ AWS IAM Roles trên AWS qua Azure",
+	"tags": [],
+	"description": "",
+	"content": "\rNhư vậy chúng ta có 02 role trên AWS đã federate đến Azure AD mà chúng ta đã tạo (Firstcloudjourney). Ở bước này, ta đã cấp quyền cho 02 roles nhưng chưa đồng bộ Roles này qua Azure AD.\n\rRole đã tạo:\n S3RoleFull (AmazonS3FullAccess) EC2RoleFull (AmazonEC2FullAccess)   Tạo User Federating Access, mở giao diện Identity and Access Management (IAM) Chọn Users bên menu trái  Chọn Add users  Trong Add user   User name, nhập federating   Trong Select AWS access type, chọn Access key - Programmatic access\n  Chọn Next:Permissions\n  Chọn Create policy  Trong Service chọn IAM   Trong Specify the actions allowed in IAM, tìm và chọn ListRoles\n  Chọn Next:Tags\n  Chọn Next: Review  Trong Review policy   Name, nhập ListRoles Description, nhập ListRoles  Chọn Create Policy  Gán ListRoles cho User federating   Quay về tab User để tiếp tục chọn Policy cho user federating chúng ta đang tạo ở bước trước. Chọn ListRoles  Chọn Next: Tags  Chọn Next: Review  Kiểm tra lại và Chọn Create user  Tạo user thành công  Bạn sẽ nhận được Access key ID và Secret access key ở bước này. Chúng ta sẽ dùng Keys này để khai báo bên Azure AD. Các bạn có thể copy key này lại để sử dụng cho bước tiếp theo.\n\r"
+},
+{
+	"uri": "/vi/8-provisingazure/",
+	"title": "Khai báo Provising trên Azure",
+	"tags": [],
+	"description": "",
+	"content": " Quay trở về Azure AD Portal bạn chọn vào Provisioning  Chọn Get started  Trong Provisioning   Phần Provisioning Mode, chọn Automatic   Nhập clientsect và secret token từ user federating chúng ta đã tạo bước trước.\n  Chọn Test Connection\n  Xác nhận thành công  Chọn Save để lưu  "
+},
+{
+	"uri": "/vi/9-provisioningtoaws/",
+	"title": "Provisioning to AWS",
+	"tags": [],
+	"description": "",
+	"content": " Quay trở lại Provisioning tab ở Azure AD Các bạn chọn Refresh để thấy trạng thái đã cập nhập 02 roles (S3RoleFull \u0026amp; EC2RoleFull)  Trạng thái đã cập nhập 02 roles (S3RoleFull \u0026amp; EC2RoleFull)  Mặc định Azure sẽ tự động cập nhật role tạo bên AWS theo interval 40 phút.\n\r"
+},
+{
+	"uri": "/vi/10-federating/",
+	"title": "Federating Azure AD Users truy xuất AWS",
+	"tags": [],
+	"description": "",
+	"content": " Gán Azure AD Users vào AWS IAM Role, trong Azure AD Portal chọn Users and groups  Chọn Add user/group  Lưu ý: Để Roles bên AWS hiện thị ở bước tiếp theo bạn có thể phải chờ 5-10 phút nhé. Và để sử dụng tính năng gán AWS IAM Role cho Azure theo Group bạn cần nâng cấp plan sử dụng Azure.\n\rTrong trang Add Assignment   Chọn Users, xuất hiện danh sách User bên phải  Chọn tên user (ví dụ: AWScloud-1) và chọn Select  Phần Select a role, chọn None Select để lựa chọn Role của User AWScloud-1 Chọn EC2RoleFull Chọn Select  Chọn Assign  Bạn lặp lại và gán User AWScloud-2 cho S3RoleFull.  Vậy là bạn đã thực hiện tạo user bên Azure AD và kết nối đến AWS thông qua Identity Provider.\n"
+},
+{
+	"uri": "/vi/11-federatingazureadusers%C4%91%E1%BA%BFnaws/",
+	"title": "Federating Azure AD Users đến AWS",
+	"tags": [],
+	"description": "",
+	"content": " Truy xuất từ trang My Apps  Nhập thông tin đăng nhập user (ví dụ: aws-2@firstcloudjourney.onmicrosoft.com) Chọn Tiếp theo   Bạn cần phải thay đổi mật khẩu ở lần đăng nhập đầu tiên.\n  Sau đó chọn Đăng nhập\n  Các bạn có thể thấy AWS Single-Account Access App mà chúng ta đã tạo. Chọn để truy xuất nhé.  Bạn đã có thể truy xuất AWS Console từ Azure AD  Kiểm tra dịch vụ sử dụng  Như các bạn đã biết, chúng ta gán user aws-2@firstcloudjourney.onmicrosoft.com với quyền S3Full. Thử EC2 và chúng ta ko có quyền truy xuất You are not authorized to perform this operation  Chúng ta có thể truy xuất Amazon S3 thông qua thiết lập quyền.  Chúc mừng các bạn đã thành công thực hiện Federating từ Azure AD.\n"
+},
+{
+	"uri": "/vi/12-clearup/",
+	"title": "Dọn dẹp tài nguyên",
+	"tags": [],
+	"description": "",
+	"content": "Xóa Azure AD users  Đăng nhập vào trang chủ Porttal Azure Chọn Azure Active Directory Chọn Users Trên danh sách user, chọn user cần xóa của bài lab Sau đó chọn delete user Chọn OK  Xóa Enterprise applications  Đăng nhập vào trang chủ Porttal Azure Chọn Azure Active Directory Chọn Enterprise applications Chọn AWS Single-Account Access Chọn Properties Chọn Delete Chọn Yes  Xóa tenant  Đăng nhập vào trang chủ Porttal Azure Chọn Azure Active Directory Trang Properties, phần Access management for Azure resources chọn Yes Chọn Manage tenants Chọn Firstcloudjourney Chọn Delete Sau khi kiểm tra, tiếp tục chọn Delete  Xóa user Identity and Access Management (IAM)  Đăng nhập vào Identity and Access Management (IAM) Chọn Users Chọn tên user cần xóa của bài lab Chọn delete Điền federating và chọn Delete  Xóa role Identity and Access Management (IAM)  Đăng nhập vào Identity and Access Management (IAM) Chọn Roles Chọn EC2RoleFull và S3RoleFull Sau đó chọn Delete Điền vào delete  Xóa Policies Identity and Access Management (IAM)  Đăng nhập vào Identity and Access Management (IAM) Chọn Policies Chọn ListRoles Chọn Actions và chọn Delete Điền xác nhận xóa ListRoles và chọn Delete  Xóa Identity providers Identity and Access Management (IAM)  Đăng nhập vào Identity and Access Management (IAM) Chọn Identity providers Chọn AzureAD Chọn Delete Xác nhận delete  "
+},
+{
+	"uri": "/vi/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/vi/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]
