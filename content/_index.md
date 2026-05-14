@@ -1,6 +1,6 @@
 ---
 title : "AWS IAM Federation from Microsoft Azure Active Directory"
-date : "`r Sys.Date()`"
+date: 2024-01-01
 weight : 1
 chapter : false
 ---
